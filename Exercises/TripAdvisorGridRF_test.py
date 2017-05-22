@@ -132,7 +132,7 @@ gs = GridSearchCV(
                         "model__max_depth": [1, 2, 5]
                     },
                     cv=2,  # 5-fold cross validation
-                    n_jobs=4,  # run each hyperparameter in one of two parallel jobs
+                    n_jobs=20,  # run each hyperparameter in one of two parallel jobs
                     scoring="accuracy" # what could happen selecting "precision" as scoring measure?
                 )
 
