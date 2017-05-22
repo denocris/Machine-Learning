@@ -91,7 +91,6 @@ get_ipython().run_cell_magic(u'time', u'', u'from sklearn.feature_extraction.tex
 # In[15]:
 
 from sklearn.model_selection import GridSearchCV
-from pandas import DataFrame
 
 pipe = my_pipeline_logreg(0.5)
 

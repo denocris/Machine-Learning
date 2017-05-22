@@ -119,7 +119,6 @@ def my_pipeline_rf(thres):
 # In[8]:
 
 from sklearn.model_selection import GridSearchCV
-from pandas import DataFrame
 
 pipe = my_pipeline_rf(0.5)
 
