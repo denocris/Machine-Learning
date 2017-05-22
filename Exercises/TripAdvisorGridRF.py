@@ -11,10 +11,10 @@ import json
 
 # In[2]:
 
-features_data = open("data/data_cleaned_head1000/textfeatures_head1000", "r")
-target_data = open("data/data_cleaned_head1000/starstarget_head1000", "r")
-#features_data = open("data/data_cleaned/textfeatures0", "r")
-#target_data = open("data/data_cleaned/starstarget0", "r")
+#features_data = open("data/data_cleaned_head1000/textfeatures_head1000", "r")
+#target_data = open("data/data_cleaned_head1000/starstarget_head1000", "r")
+features_data = open("data/data_cleaned/textfeatures0", "r")
+target_data = open("data/data_cleaned/starstarget0", "r")
 text = [line for line in features_data]
 target = [int(line.split()[0]) for line in target_data]
 
