@@ -77,56 +77,30 @@ from sklearn.cross_validation import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(reb_text, reb_target, test_size=0.2, random_state=42)
 
 
-# # Random Forest Classifier
+# # Linear Model: Logistic Regression
+#
+#
 
-# In[7]:
+# In[13]:
 
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.ensemble import RandomForestClassifier
-
-from sklearn import pipeline
+get_ipython().run_cell_magic(u'time', u'', u'from sklearn.feature_extraction.text import CountVectorizer\nfrom sklearn.feature_extraction.text import TfidfTransformer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn import pipeline\n\n\ndef my_pipeline_logreg(thres):\n    nsw = np.loadtxt("data/stop_words/my_stop_words_thr_%.2f.txt" %thres, dtype=str)\n    pipe = pipeline.Pipeline([\n                            (\'count_vectorizer\', CountVectorizer(stop_words = list(nsw), max_df = 0.9, min_df = 10)),\n                            #(\'count_vectorizer\', CountVectorizer(stop_words = my_stop_words, max_df = 0.9, min_df = 10)),\n                            (\'tf_idf\',TfidfTransformer()),\n                            (\'model\',LogisticRegression(penalty=\'l2\', \n                                                           dual=False, \n                                                           tol=0.0001, \n                                                           C=1.0, \n                                                           fit_intercept=True, \n                                                           intercept_scaling=1, \n                                                           class_weight=None, \n                                                           random_state=None, \n                                                           solver=\'liblinear\', \n                                                           max_iter=100,\n                                                           multi_class=\'ovr\',\n                                                           verbose=0, \n                                                           warm_start=False, \n                                                           n_jobs=1))\n                         ])\n    return pipe')
 
 
-def my_pipeline_rf(thres):
-    nsw = np.loadtxt("data/stop_words/my_stop_words_thr_%.2f.txt" %thres, dtype=str)
-    pipe = pipeline.Pipeline([
-                            ('count_vectorizer', CountVectorizer(stop_words = list(nsw), max_df = 0.9, min_df = 10)),
-                            #('count_vectorizer', CountVectorizer(stop_words = my_stop_words, max_df = 0.9, min_df = 10)),
-                            ('tf_idf',TfidfTransformer()),
-                            ('model',RandomForestClassifier(n_estimators=150,
-                                                               criterion='gini',
-                                                               max_depth=2,
-                                                               min_samples_split=2,
-                                                               min_samples_leaf=1,
-                                                               min_weight_fraction_leaf=0.0,
-                                                               max_features='auto',
-                                                               max_leaf_nodes=None,
-                                                               min_impurity_split=1e-07,
-                                                               bootstrap=True,
-                                                               oob_score=False,
-                                                               n_jobs=1,
-                                                               random_state=None,
-                                                               verbose=0,
-                                                               warm_start=False,
-                                                               class_weight=None))
-                         ])
-    return pipe
+# # Parameter Optimisation: Grid Search for Logistic Regression
 
-
-# # Parameter Optimisation: Grid Search for Random Forest
-
-# In[8]:
+# In[15]:
 
 from sklearn.model_selection import GridSearchCV
 
-pipe = my_pipeline_rf(0.5)
+pipe = my_pipeline_logreg(0.5)
 
 gs = GridSearchCV(
                     pipe,
                     {
-                        "count_vectorizer__min_df": range(1,10)+range(10,25,5),
-                        "model__max_depth": range(1,15)+range(20,50,10)
+                        #"count_vectorizer__min_df": range(1,10)+range(10,30,5),
+                        #"model__C": [0.1, 0.5, 1.0, 3.0, 5.0, 10, 20, 50, 80]
+                        "count_vectorizer__min_df": range(1,3),
+                        "model__C": [0.1, 0.5]
                     },
                     cv=2,  # 5-fold cross validation
                     n_jobs=20,  # run each hyperparameter in one of two parallel jobs
@@ -135,10 +109,10 @@ gs = GridSearchCV(
 
 gs.fit(X_train, y_train)
 
-np.save("rf_grid_results.npy", gs.cv_results_)
-np.save("rf_grid_bestparameters.npy", gs.best_params_)
+np.save("lr_grid_results.npy", gs.cv_results_)
+np.save("lr_grid_bestparameters.npy", gs.best_params_)
 
+print "LR Done!"
 
-print "RF Done!"
 
 # In[ ]:
