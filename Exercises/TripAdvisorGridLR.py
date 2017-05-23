@@ -83,9 +83,34 @@ X_train, X_test, y_train, y_test = train_test_split(reb_text, reb_target, test_s
 
 # In[13]:
 
-get_ipython().run_cell_magic(u'time', u'', u'from sklearn.feature_extraction.text import CountVectorizer\nfrom sklearn.feature_extraction.text import TfidfTransformer\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn import pipeline\n\n\ndef my_pipeline_logreg(thres):\n    nsw = np.loadtxt("data/stop_words/my_stop_words_thr_%.2f.txt" %thres, dtype=str)\n    pipe = pipeline.Pipeline([\n                            (\'count_vectorizer\', CountVectorizer(stop_words = list(nsw), max_df = 0.9, min_df = 10)),\n                            #(\'count_vectorizer\', CountVectorizer(stop_words = my_stop_words, max_df = 0.9, min_df = 10)),\n                            (\'tf_idf\',TfidfTransformer()),\n                            (\'model\',LogisticRegression(penalty=\'l2\', \n                                                           dual=False, \n                                                           tol=0.0001, \n                                                           C=1.0, \n                                                           fit_intercept=True, \n                                                           intercept_scaling=1, \n                                                           class_weight=None, \n                                                           random_state=None, \n                                                           solver=\'liblinear\', \n                                                           max_iter=100,\n                                                           multi_class=\'ovr\',\n                                                           verbose=0, \n                                                           warm_start=False, \n                                                           n_jobs=1))\n                         ])\n    return pipe')
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.linear_model import LogisticRegression
+from sklearn import pipeline
 
 
+def my_pipeline_logreg(thres):
+    nsw = np.loadtxt("data/stop_words/my_stop_words_thr_%.2f.txt" %thres, dtype=str)
+    pipe = pipeline.Pipeline([
+                            ('count_vectorizer', CountVectorizer(stop_words = list(nsw), max_df = 0.9, min_df = 10)),
+                            #('count_vectorizer', CountVectorizer(stop_words = my_stop_words, max_df = 0.9, min_df = 10)),
+                            ('tf_idf',TfidfTransformer()),
+                            ('model',LogisticRegression(penalty='l2',
+                                                           dual=False,
+                                                           tol=0.0001,
+                                                           C=1.0,
+                                                           fit_intercept=True,
+                                                           intercept_scaling=1,
+                                                           class_weight=None,
+                                                           random_state=None,
+                                                           solver='liblinear',
+                                                           max_iter=100,
+                                                           multi_class='ovr',
+                                                           verbose=0,
+                                                           warm_start=False,
+                                                           n_jobs=1))
+                         ])
+    return pipe
 # # Parameter Optimisation: Grid Search for Logistic Regression
 
 # In[15]:
